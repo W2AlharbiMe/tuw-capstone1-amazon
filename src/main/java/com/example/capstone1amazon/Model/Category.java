@@ -13,6 +13,6 @@ public class Category {
     private Integer id;
 
     @NotEmpty(message = "the name field is required.")
-    @Size(min = 3, message = "the category name must be more than 3 length long.")
+    @Size(min = 4, message = "the category name must be more than 3 length long.")
     private String name;
 }
