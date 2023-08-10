@@ -57,7 +57,7 @@ public class CategoriesController {
         }
 
         Category category = categoryService.updateCategory(id, updateCategoryDTO);
-        return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been created.", category)));
+        return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been updated.", category)));
     }
 
     @DeleteMapping("/{id}/delete")
