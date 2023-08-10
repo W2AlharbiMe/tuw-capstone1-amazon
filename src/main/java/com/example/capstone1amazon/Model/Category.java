@@ -10,7 +10,7 @@ public class Category {
 
     @NotNull(message = "the id field is required.")
     @Positive(message = "the id field must be positive.")
-    private int id;
+    private Integer id;
 
     @NotEmpty(message = "the name field is required.")
     @Size(min = 3, message = "the category name must be more than 3 length long.")
