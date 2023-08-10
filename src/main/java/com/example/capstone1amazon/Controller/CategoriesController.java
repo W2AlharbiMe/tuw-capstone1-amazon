@@ -32,7 +32,7 @@ public class CategoriesController {
 
     @PostMapping("/save")
     public ResponseEntity<?> saveCategory(@RequestBody @Valid Category category, Errors errors) {
-        if(categoryService.isDuplicateId(category.getId())) {
+        if(categoryService.containsId(category.getId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("category", "the id must be unique.", "id", "unique")));
         }
 

@@ -1,5 +1,6 @@
 package com.example.capstone1amazon.Service;
 
+import com.example.capstone1amazon.DTO.UpdateCategoryDTO;
 import com.example.capstone1amazon.Model.Category;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class CategoryService {
         return categories;
     }
 
-    public boolean isDuplicateId(Integer id) {
+    public boolean containsId(Integer id) {
         return unique_id_map.containsKey(id);
     }
 
