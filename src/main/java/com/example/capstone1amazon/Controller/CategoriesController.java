@@ -3,6 +3,7 @@ package com.example.capstone1amazon.Controller;
 import com.example.capstone1amazon.ApiResponse.ApiErrorResponse;
 import com.example.capstone1amazon.ApiResponse.ApiResponseWithData;
 import com.example.capstone1amazon.ApiResponse.SimpleApiResponse;
+import com.example.capstone1amazon.DTO.UpdateCategoryDTO;
 import com.example.capstone1amazon.Model.Category;
 import com.example.capstone1amazon.Service.CategoryService;
 import com.example.capstone1amazon.Service.ErrorsService;
@@ -44,6 +45,19 @@ public class CategoriesController {
         return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been created.", category)));
     }
 
+    @PutMapping("/{id}/update")
+    public ResponseEntity<?> updateCategory(@PathVariable Integer id, @RequestBody @Valid UpdateCategoryDTO updateCategoryDTO, Errors errors) {
+        if(!categoryService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("category", "category not found.", "id", "not_found")));
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+        }
+
+        Category category = categoryService.updateCategory(id, updateCategoryDTO);
+        return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been created.", category)));
+    }
 
 }
 
