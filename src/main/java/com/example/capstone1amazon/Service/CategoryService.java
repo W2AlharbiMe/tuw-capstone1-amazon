@@ -9,18 +9,18 @@ import java.util.HashMap;
 @Service
 public class CategoryService {
     private final ArrayList<Category> categories = new ArrayList<>();
-    private final HashMap<Integer, Boolean> unique_index_map = new HashMap<>();
+    private final HashMap<Integer, Boolean> unique_id_map = new HashMap<>();
 
     public final ArrayList<Category> getCategories() {
         return categories;
     }
 
     public boolean isDuplicateId(Integer id) {
-        return unique_index_map.containsKey(id);
+        return unique_id_map.containsKey(id);
     }
 
     public void saveCategory(Category category) {
-        unique_index_map.put(category.getId(), true);
+        unique_id_map.put(category.getId(), true);
         categories.add(category);
     }
 }
