@@ -35,4 +35,12 @@ public class CategoryService {
 
         return saved_category;
     }
+
+    public Category deleteCategory(Integer id) {
+        Category saved_category = categories.get(id);
+
+        categories.remove(id);
+
+        return saved_category;
+    }
 }

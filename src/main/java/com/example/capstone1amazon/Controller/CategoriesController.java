@@ -60,5 +60,18 @@ public class CategoriesController {
         return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been created.", category)));
     }
 
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> deleteCategory(@PathVariable Integer id) {
+        if(!categoryService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("category", "category not found.", "id", "not_found")));
+        }
+
+
+        Category category = categoryService.deleteCategory(id);
+
+        return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been deleted.", category)));
+    }
+
+
 }
 
