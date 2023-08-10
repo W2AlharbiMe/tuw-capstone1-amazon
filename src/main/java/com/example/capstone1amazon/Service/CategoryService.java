@@ -21,7 +21,7 @@ public class CategoryService {
     }
 
     public void saveCategory(Category category) {
-        unique_id_map.put(category.getId(), (categories.size() - 1));
         categories.add(category);
+        unique_id_map.put(category.getId(), (categories.size() - 1));
     }
 }
