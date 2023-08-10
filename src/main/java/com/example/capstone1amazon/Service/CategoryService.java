@@ -9,7 +9,7 @@ import java.util.HashMap;
 @Service
 public class CategoryService {
     private final ArrayList<Category> categories = new ArrayList<>();
-    private final HashMap<Integer, Boolean> unique_id_map = new HashMap<>();
+    private final HashMap<Integer, Integer> unique_id_map = new HashMap<>();
 
     public final ArrayList<Category> getCategories() {
         return categories;
@@ -20,7 +20,7 @@ public class CategoryService {
     }
 
     public void saveCategory(Category category) {
-        unique_id_map.put(category.getId(), true);
+        unique_id_map.put(category.getId(), (categories.size() - 1));
         categories.add(category);
     }
 }
