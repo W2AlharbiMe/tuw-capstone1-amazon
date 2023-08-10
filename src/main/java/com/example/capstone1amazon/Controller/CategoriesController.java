@@ -15,6 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -26,7 +27,7 @@ public class CategoriesController {
 
 
     @GetMapping("/get")
-    public ResponseEntity<ArrayList<Category>> getCategories() {
+    public ResponseEntity<Collection<Category>> getCategories() {
         return ResponseEntity.ok(categoryService.getCategories());
     }
 
