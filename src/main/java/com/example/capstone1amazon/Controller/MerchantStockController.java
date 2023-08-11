@@ -47,7 +47,7 @@ public class MerchantStockController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "No merchant have been found with the merchant id you provided.", "merchantId", "merchant_not_found")));
         }
 
-        if(merchantStockService.ensureOneProduct(merchantStock.getProductId(), merchantStock.getProductId())) {
+        if(merchantStockService.ensureOneProduct(merchantStock.getMerchantId(), merchantStock.getProductId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "merchant stock can not have the same product twice.", "productId", "unique_product")));
         }
 

@@ -41,7 +41,7 @@ public class MerchantStockService {
 
     // a merchant stock can not have the same product twice.
     // each stock must have unique product id
-    public boolean ensureOneProduct(Integer productId, Integer merchantId) {
+    public boolean ensureOneProduct(Integer merchantId, Integer productId) {
         if(!merchantProducts.containsKey(merchantId)) {
             return false;
         }
