@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 public class MerchantStockService {
@@ -111,6 +112,17 @@ public class MerchantStockService {
 
     public MerchantStock deleteMerchantStock(Integer id) {
         MerchantStock saved_merchant_stock = merchantsStocks.get(id);
+
+        ArrayList<Integer> products =  merchantProducts.get(saved_merchant_stock.getMerchantId());
+
+        for (int i = 0; i < products.size(); i++) {
+            Integer p = products.get(i);
+
+            if(Objects.equals(p, saved_merchant_stock.getProductId())) {
+                products.remove(i);
+                break;
+            }
+        }
 
         merchantsStocks.remove(id);
 
