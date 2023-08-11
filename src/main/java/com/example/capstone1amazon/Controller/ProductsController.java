@@ -2,6 +2,7 @@ package com.example.capstone1amazon.Controller;
 
 import com.example.capstone1amazon.ApiResponse.ApiErrorResponse;
 import com.example.capstone1amazon.ApiResponse.ApiResponseWithData;
+import com.example.capstone1amazon.DTO.UpdateProductDTO;
 import com.example.capstone1amazon.Model.Category;
 import com.example.capstone1amazon.Model.Product;
 import com.example.capstone1amazon.Service.CategoryService;
@@ -48,5 +49,25 @@ public class ProductsController {
 
         return ResponseEntity.ok((new ApiResponseWithData<Product>("The product have been created.", product)));
     }
+
+    @PutMapping("/{id}/update")
+    private ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody @Valid UpdateProductDTO updateProductDTO, Errors errors) {
+        if(!productService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("product", "product not found.", "id", "not_found")));
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+        }
+
+        if(!categoryService.containsId(updateProductDTO.getCategoryId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("product", "No category have been found with the category id you provided.", "categoryId", "category_not_found")));
+        }
+
+        Product product = productService.updateProduct(id, updateProductDTO);
+        return ResponseEntity.ok((new ApiResponseWithData<Product>("the product have been updated.", product)));
+    }
+
+
 }
 

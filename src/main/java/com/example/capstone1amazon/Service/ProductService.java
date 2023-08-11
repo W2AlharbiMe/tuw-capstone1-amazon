@@ -1,5 +1,6 @@
 package com.example.capstone1amazon.Service;
 
+import com.example.capstone1amazon.DTO.UpdateProductDTO;
 import com.example.capstone1amazon.Model.Product;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,15 @@ public class ProductService {
 
     public void saveProduct(Product product) {
         products.put(product.getId(), product);
+    }
+
+    public Product updateProduct(Integer id, UpdateProductDTO updateProductDTO) {
+        Product saved_product = products.get(id);
+
+        saved_product.setName(updateProductDTO.getName());
+        saved_product.setPrice(updateProductDTO.getPrice());
+        saved_product.setCategoryId(updateProductDTO.getCategoryId());
+
+        return saved_product;
     }
 }
