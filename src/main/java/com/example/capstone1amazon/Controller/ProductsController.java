@@ -37,12 +37,13 @@ public class ProductsController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("product", "the id must be unique.", "id", "unique")));
         }
 
-        if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
-        }
-
         if(!categoryService.containsId(product.getCategoryId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("product", "No category have been found with the category id you provided.", "categoryId", "category_not_found")));
+        }
+
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
         }
 
         productService.saveProduct(product);
@@ -56,12 +57,13 @@ public class ProductsController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("product", "product not found.", "id", "not_found")));
         }
 
-        if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
-        }
-
         if(!categoryService.containsId(updateProductDTO.getCategoryId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("product", "No category have been found with the category id you provided.", "categoryId", "category_not_found")));
+        }
+
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
         }
 
         Product product = productService.updateProduct(id, updateProductDTO);
