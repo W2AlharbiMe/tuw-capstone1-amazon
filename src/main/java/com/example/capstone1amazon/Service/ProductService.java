@@ -34,4 +34,12 @@ public class ProductService {
 
         return saved_product;
     }
+
+    public Product deleteProduct(Integer id) {
+        Product saved_product = products.get(id);
+
+        products.remove(id);
+
+        return saved_product;
+    }
 }
