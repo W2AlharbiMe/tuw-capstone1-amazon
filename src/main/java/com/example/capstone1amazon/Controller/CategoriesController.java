@@ -43,7 +43,8 @@ public class CategoriesController {
         }
 
         categoryService.saveCategory(category);
-        return ResponseEntity.ok((new ApiResponseWithData<Category>("The category have been created.", category)));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponseWithData<Category>("The category have been created.", category)));
     }
 
     @PutMapping("/{id}/update")

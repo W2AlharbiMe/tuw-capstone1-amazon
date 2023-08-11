@@ -48,7 +48,7 @@ public class ProductsController {
 
         productService.saveProduct(product);
 
-        return ResponseEntity.ok((new ApiResponseWithData<Product>("The product have been created.", product)));
+        return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponseWithData<Product>("The product have been created.", product)));
     }
 
     @PutMapping("/{id}/update")
