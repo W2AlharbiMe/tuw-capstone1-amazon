@@ -51,7 +51,7 @@ public class ProductsController {
     }
 
     @PutMapping("/{id}/update")
-    private ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody @Valid UpdateProductDTO updateProductDTO, Errors errors) {
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody @Valid UpdateProductDTO updateProductDTO, Errors errors) {
         if(!productService.containsId(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("product", "product not found.", "id", "not_found")));
         }
