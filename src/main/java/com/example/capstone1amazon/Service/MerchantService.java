@@ -1,5 +1,6 @@
 package com.example.capstone1amazon.Service;
 
+import com.example.capstone1amazon.DTO.UpdateMerchantDTO;
 import com.example.capstone1amazon.Model.Merchant;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,15 @@ public class MerchantService {
 
     public void saveMerchant(Merchant merchant) {
         merchants.put(merchant.getId(), merchant);
+    }
+
+    public Merchant updateMerchant(Integer id, UpdateMerchantDTO updateMerchantDTO) {
+        Merchant saved_merchant = merchants.get(id);
+
+        saved_merchant.setName(
+                updateMerchantDTO.getName()
+        );
+
+        return saved_merchant;
     }
 }

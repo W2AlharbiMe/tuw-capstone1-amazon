@@ -2,9 +2,11 @@ package com.example.capstone1amazon.Controller;
 
 import com.example.capstone1amazon.ApiResponse.ApiErrorResponse;
 import com.example.capstone1amazon.ApiResponse.ApiResponseWithData;
+import com.example.capstone1amazon.DTO.UpdateMerchantDTO;
 import com.example.capstone1amazon.Model.Merchant;
 import com.example.capstone1amazon.Service.ErrorsService;
 import com.example.capstone1amazon.Service.MerchantService;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,4 +43,21 @@ public class MerchantsController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponseWithData<Merchant>("the merchant have been created.", merchant)));
     }
+
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<?> updateMerchant(@PathVariable Integer id, @RequestBody @Valid UpdateMerchantDTO updateMerchantDTO, Errors errors) {
+        if(!merchantService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("merchant", "merchant not found.", "id", "not_found")));
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
+        }
+
+        Merchant merchant = merchantService.updateMerchant(id, updateMerchantDTO);
+
+        return ResponseEntity.ok((new ApiResponseWithData<Merchant>("the merchant have been updated.", merchant)));
+    }
+
 }
