@@ -109,4 +109,11 @@ public class MerchantStockService {
         return operation.equalsIgnoreCase("increase") ? "the merchant stock have been increased by "+ updateMerchantStockDTO.getAmount() +" product." : "the merchant stock have been decreased by "+ updateMerchantStockDTO.getAmount() +" product.";
     }
 
+    public MerchantStock deleteMerchantStock(Integer id) {
+        MerchantStock saved_merchant_stock = merchantsStocks.get(id);
+
+        merchantsStocks.remove(id);
+
+        return saved_merchant_stock;
+    }
 }

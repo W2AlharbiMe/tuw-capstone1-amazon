@@ -93,4 +93,14 @@ public class MerchantStockController {
         }
     }
 
+    @DeleteMapping("/{merchantStockId}/delete")
+    public ResponseEntity<?> deleteMerchantStock(@PathVariable Integer merchantStockId) {
+        if(!merchantStockService.containsId(merchantStockId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("merchantStock", "merchant stock not found.", "id", "not_found")));
+        }
+
+        MerchantStock merchantStock = merchantStockService.deleteMerchantStock(merchantStockId);
+
+        return ResponseEntity.ok((new ApiResponseWithData<MerchantStock>("a merchant stock have been deleted.", merchantStock)));
+    }
 }
