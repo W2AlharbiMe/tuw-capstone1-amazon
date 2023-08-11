@@ -34,4 +34,12 @@ public class MerchantService {
 
         return saved_merchant;
     }
+
+    public Merchant deleteMerchant(Integer id) {
+        Merchant saved_merchant = merchants.get(id);
+
+        merchants.remove(id);
+
+        return saved_merchant;
+    }
 }

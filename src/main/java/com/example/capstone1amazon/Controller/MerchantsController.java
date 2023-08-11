@@ -60,4 +60,15 @@ public class MerchantsController {
         return ResponseEntity.ok((new ApiResponseWithData<Merchant>("the merchant have been updated.", merchant)));
     }
 
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> deleteMerchant(@PathVariable Integer id) {
+        if(!merchantService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("merchant", "merchant not found.", "id", "not_found")));
+        }
+
+        Merchant merchant = merchantService.deleteMerchant(id);
+
+        return ResponseEntity.ok((new ApiResponseWithData<Merchant>("the merchant have been deleted.", merchant)));
+    }
 }
