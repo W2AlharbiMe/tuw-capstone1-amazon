@@ -2,6 +2,7 @@ package com.example.capstone1amazon.Controller;
 
 import com.example.capstone1amazon.ApiResponse.ApiErrorResponse;
 import com.example.capstone1amazon.ApiResponse.ApiResponseWithData;
+import com.example.capstone1amazon.DTO.UpdateMerchantStockDTO;
 import com.example.capstone1amazon.Model.MerchantStock;
 import com.example.capstone1amazon.Service.ErrorsService;
 import com.example.capstone1amazon.Service.MerchantService;
@@ -59,5 +60,37 @@ public class MerchantStockController {
         return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponseWithData<MerchantStock>("a merchant stock have been created.", merchantStock)));
     }
 
+
+    // PUT /api/v1/merchants/stock/1/increase
+    // ---- OR ----
+    // PUT /api/v1/merchants/stock/1/decrease
+    @PutMapping("/{merchantStockId}/{operation}")
+    public ResponseEntity<?> stockOperation(@PathVariable Integer merchantStockId, @PathVariable String operation, @RequestBody @Valid UpdateMerchantStockDTO updateMerchantStockDTO, Errors errors) {
+        if(!merchantStockService.containsId(merchantStockId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("merchantStock", "merchant stock not found.", "id", "not_found")));
+        }
+
+        if(merchantStockService.ensureStockOperation(operation)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "invalid operation, it can only be increase or decrease.", "operation", "invalid_type")));
+        }
+
+        try {
+            merchantStockService.validateOperations(merchantStockId, operation, updateMerchantStockDTO);
+        } catch (Exception e1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", e1.getMessage(), "operation", "invalid_operation")));
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
+        }
+
+        try {
+           MerchantStock merchantStock = merchantStockService.stockOperation(operation, merchantStockId, updateMerchantStockDTO);
+
+           return ResponseEntity.ok((new ApiResponseWithData<MerchantStock>(merchantStockService.getOperationMessage(operation, updateMerchantStockDTO), merchantStock)));
+        } catch (Exception e2) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", e2.getMessage(), "operation", "invalid_type")));
+        }
+    }
 
 }
