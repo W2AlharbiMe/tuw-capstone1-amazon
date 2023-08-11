@@ -20,4 +20,7 @@ public class MerchantService {
         return merchants.containsKey(id);
     }
 
+    public void saveMerchant(Merchant merchant) {
+        merchants.put(merchant.getId(), merchant);
+    }
 }
