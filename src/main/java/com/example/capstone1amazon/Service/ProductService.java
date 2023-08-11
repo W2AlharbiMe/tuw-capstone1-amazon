@@ -19,4 +19,8 @@ public class ProductService {
     public boolean containsId(Integer id) {
         return products.containsKey(id);
     }
+
+    public void saveProduct(Product product) {
+        products.put(product.getId(), product);
+    }
 }
