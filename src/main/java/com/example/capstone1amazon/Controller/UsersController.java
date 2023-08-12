@@ -70,4 +70,16 @@ public class UsersController {
 
         return ResponseEntity.ok((new ApiResponseWithData<User>("the user have been updated.", user)));
     }
+
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
+        if(!userService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "id", "not_found")));
+        }
+
+        User user = userService.deleteUser(id);
+
+        return ResponseEntity.ok((new ApiResponseWithData<User>("the user have been deleted.", user)));
+    }
 }

@@ -71,4 +71,13 @@ public class UserService {
 
         return saved_user;
     }
+
+    public User deleteUser(Integer id) {
+        User saved_user = users.get(id);
+
+        users.remove(id);
+        emails.remove(saved_user.getEmail());
+
+        return saved_user;
+    }
 }
