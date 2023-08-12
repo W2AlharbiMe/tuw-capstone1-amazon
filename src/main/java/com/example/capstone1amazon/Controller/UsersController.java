@@ -82,4 +82,30 @@ public class UsersController {
 
         return ResponseEntity.ok((new ApiResponseWithData<User>("the user have been deleted.", user)));
     }
+
+    @GetMapping("/get/{field}/{value}")
+    public ResponseEntity<?> getUserByField(@PathVariable String field, @PathVariable String value) {
+        if(field.equalsIgnoreCase("email")) {
+            if(!userService.containsEmail(value)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "email", "not_found")));
+            }
+
+            return ResponseEntity.ok(userService.getUserByEmail(value));
+        }
+
+        if(field.equalsIgnoreCase("id")) {
+            try {
+                if(!userService.containsId(Integer.parseInt(value))) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "id", "not_found")));
+                }
+
+                return ResponseEntity.ok(userService.getUserById(Integer.parseInt(value)));
+            } catch (NumberFormatException e1) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("request", "invalid id format, it must be number.", "id", "invalid_format")));
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("request", "invalid field, it can only be 'id' or 'email'.", field, "invalid_field")));
+    }
+
 }

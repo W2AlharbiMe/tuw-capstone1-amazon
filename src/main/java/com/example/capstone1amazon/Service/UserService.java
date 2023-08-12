@@ -80,4 +80,12 @@ public class UserService {
 
         return saved_user;
     }
+
+    public User getUserById(Integer id) {
+        return users.get(id);
+    }
+
+    public User getUserByEmail(String email) {
+        return users.get(emails.get(email));
+    }
 }
