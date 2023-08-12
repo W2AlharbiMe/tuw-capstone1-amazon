@@ -2,6 +2,7 @@ package com.example.capstone1amazon.Controller;
 
 import com.example.capstone1amazon.ApiResponse.ApiErrorResponse;
 import com.example.capstone1amazon.ApiResponse.ApiResponseWithData;
+import com.example.capstone1amazon.DTO.UpdateUserDTO;
 import com.example.capstone1amazon.Model.User;
 import com.example.capstone1amazon.Service.ErrorsService;
 import com.example.capstone1amazon.Service.UserService;
@@ -39,7 +40,7 @@ public class UsersController {
         }
 
         if(userService.containsEmail(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "used email.", "email", "unique")));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "used email.", "email", "duplicate_value")));
         }
 
         if(errors.hasErrors()) {
@@ -51,5 +52,22 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body((new ApiResponseWithData<User>("the user have beenc created.", user)));
     }
 
+    @PutMapping("/{id}/update")
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody @Valid UpdateUserDTO updateUserDTO, Errors errors) {
+        if(!userService.containsId(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "id", "not_found")));
+        }
 
+        if(userService.containsEmail(updateUserDTO.getEmail(), id)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "used email.", "email", "duplicate_value")));
+        }
+
+        if(errors.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+        }
+
+        User user = userService.updateUser(id, updateUserDTO);
+
+        return ResponseEntity.ok((new ApiResponseWithData<User>("the user have been updated.", user)));
+    }
 }

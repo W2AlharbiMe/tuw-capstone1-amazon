@@ -1,10 +1,12 @@
 package com.example.capstone1amazon.Service;
 
+import com.example.capstone1amazon.DTO.UpdateUserDTO;
 import com.example.capstone1amazon.Model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
@@ -43,10 +45,30 @@ public class UserService {
         return emails.containsKey(email);
     }
 
+    public boolean containsEmail(String email, Integer id) {
+        if(emails.containsKey(email)) {
+            return !Objects.equals(users.get(emails.get(email)).getId(), id);
+        }
+
+        return false;
+    }
+
+
     public void createUser(User user) {
         users.put(user.getId(), user);
         emails.put(user.getEmail(), user.getId());
     }
 
 
+    public User updateUser(Integer id, UpdateUserDTO updateUserDTO) {
+        User saved_user = users.get(id);
+
+        saved_user.setUsername(updateUserDTO.getUsername());
+        saved_user.setPassword(updateUserDTO.getPassword());
+        saved_user.setBalance(updateUserDTO.getBalance());
+        saved_user.setEmail(updateUserDTO.getEmail().toLowerCase());
+        saved_user.setRole(updateUserDTO.getRole().toLowerCase());
+
+        return saved_user;
+    }
 }
