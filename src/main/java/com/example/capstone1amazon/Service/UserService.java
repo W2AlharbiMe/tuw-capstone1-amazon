@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 @Service
 public class UserService {
     private final HashMap<Integer, User> users = new HashMap<>();
+    private final HashMap<String, Integer> emails = new HashMap<>();
+
 
     public Collection<User> getAllUsers(String role) {
         Collection<User> all = users.values();
@@ -31,6 +33,19 @@ public class UserService {
         }
 
         return all;
+    }
+
+    public boolean containsId(Integer id) {
+        return users.containsKey(id);
+    }
+
+    public boolean containsEmail(String email) {
+        return emails.containsKey(email);
+    }
+
+    public void createUser(User user) {
+        users.put(user.getId(), user);
+        emails.put(user.getEmail(), user.getId());
     }
 
 
