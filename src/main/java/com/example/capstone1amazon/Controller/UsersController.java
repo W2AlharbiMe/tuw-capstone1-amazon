@@ -136,7 +136,7 @@ public class UsersController {
         }
 
         if(!merchantStockService.ensureMerchantHaveStocks(buyProductDTO.getMerchantId())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "the merchant does not have stocks of anything.", "merchantId", "no_stock")));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "the merchant does not have stocks of anything.", "merchantId", "no_stock")));
         }
 
         // ensure that the merchant have the product
