@@ -1,5 +1,6 @@
 package com.example.capstone1amazon.DTO;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor
+@Schema()
 public class BuyProductDTO {
 
     @NotNull(message = "the user id field is required.")

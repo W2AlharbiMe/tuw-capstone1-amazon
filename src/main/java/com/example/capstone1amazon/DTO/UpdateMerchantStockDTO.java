@@ -2,12 +2,14 @@ package com.example.capstone1amazon.DTO;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
+@Schema()
 public class UpdateMerchantStockDTO {
 
     @NotNull(message = "the amount field is required.")
