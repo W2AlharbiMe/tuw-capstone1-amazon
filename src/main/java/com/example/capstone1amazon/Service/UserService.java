@@ -55,6 +55,9 @@ public class UserService {
 
 
     public void createUser(User user) {
+        user.setEmail(user.getEmail().toLowerCase());
+        user.setRole(user.getRole().toLowerCase());
+
         users.put(user.getId(), user);
         emails.put(user.getEmail(), user.getId());
     }
