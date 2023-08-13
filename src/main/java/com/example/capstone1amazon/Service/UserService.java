@@ -88,4 +88,23 @@ public class UserService {
     public User getUserByEmail(String email) {
         return users.get(emails.get(email));
     }
+
+    public boolean validateBalance(double price, Integer id) {
+        return getUserById(id).getBalance() < price;
+    }
+
+    public HashMap<String, Double> buyProduct(Integer id, double price) {
+        User user = getUserById(id);
+        Double previous_balance = user.getBalance();
+
+        user.setBalance((previous_balance - price));
+        Double new_balance = user.getBalance();
+
+
+        HashMap<String, Double> balanceResponse = new HashMap<>();
+        balanceResponse.put("previous_balance", previous_balance);
+        balanceResponse.put("new_balance", new_balance);
+
+        return balanceResponse;
+    }
 }

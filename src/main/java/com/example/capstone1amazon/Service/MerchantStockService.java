@@ -1,6 +1,7 @@
 package com.example.capstone1amazon.Service;
 
 import com.example.capstone1amazon.DTO.UpdateMerchantStockDTO;
+import com.example.capstone1amazon.Model.Merchant;
 import com.example.capstone1amazon.Model.MerchantStock;
 import org.springframework.stereotype.Service;
 
@@ -127,5 +128,21 @@ public class MerchantStockService {
         merchantsStocks.remove(id);
 
         return saved_merchant_stock;
+    }
+
+    public MerchantStock getStockByProductId(Integer merchantId, Integer productId) throws Exception {
+        Collection<MerchantStock> stocks = getAllMerchantsStocks();
+
+        for (MerchantStock stock : stocks) {
+            if(Objects.equals(stock.getMerchantId(), merchantId) && Objects.equals(stock.getProductId(), productId)) {
+                return stock;
+            }
+        }
+
+        throw new Exception("Stock Not Found.");
+    }
+
+    public boolean ensureMerchantHaveStocks(Integer merchantId) {
+        return merchantProducts.containsKey(merchantId);
     }
 }

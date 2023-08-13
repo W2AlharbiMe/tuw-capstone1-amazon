@@ -2,6 +2,7 @@ package com.example.capstone1amazon.Service;
 
 import com.example.capstone1amazon.DTO.UpdateMerchantDTO;
 import com.example.capstone1amazon.Model.Merchant;
+import com.example.capstone1amazon.Model.MerchantStock;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -41,5 +42,9 @@ public class MerchantService {
         merchants.remove(id);
 
         return saved_merchant;
+    }
+
+    public Merchant getMerchantById(Integer id) {
+        return merchants.get(id);
     }
 }
