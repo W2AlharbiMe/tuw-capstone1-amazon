@@ -1,11 +1,13 @@
 package com.example.capstone1amazon.DTO;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Schema()
 public class UpdateUserDTO {
     @NotEmpty(message = "the username field is required.")
     @Size(min = 6, message = "the username must be more than 5 length long.")

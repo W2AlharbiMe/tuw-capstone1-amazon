@@ -2,12 +2,14 @@ package com.example.capstone1amazon.DTO;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@Schema()
 public class UpdateCategoryDTO {
 
     @NotEmpty(message = "the name field is required.")
