@@ -42,4 +42,8 @@ public class ProductService {
 
         return saved_product;
     }
+
+    public Product getProductById(Integer id) {
+        return products.get(id);
+    }
 }
