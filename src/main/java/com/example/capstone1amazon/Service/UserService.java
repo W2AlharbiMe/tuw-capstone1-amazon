@@ -17,7 +17,7 @@ public class UserService {
 
     public Collection<User> getAllUsers(String role) {
         Collection<User> all = users.values();
-        boolean presentRole = role.isEmpty();
+        boolean presentRole = role == null;
         boolean isAdmin = !presentRole &&  role.equalsIgnoreCase("admin");
         boolean isCustomer = !presentRole && role.equalsIgnoreCase("customer");
 
