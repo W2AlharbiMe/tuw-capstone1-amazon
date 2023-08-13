@@ -64,9 +64,9 @@ public class MerchantStockController {
     // PUT /api/v1/merchants/stock/1/increase
     // ---- OR ----
     // PUT /api/v1/merchants/stock/1/decrease
-    @PutMapping("/{merchantStockId}/{operation}")
-    public ResponseEntity<?> stockOperation(@PathVariable Integer merchantStockId, @PathVariable String operation, @RequestBody @Valid UpdateMerchantStockDTO updateMerchantStockDTO, Errors errors) {
-        if(!merchantStockService.containsId(merchantStockId)) {
+    @PutMapping("/{merchantId}/{productId}/{operation}")
+    public ResponseEntity<?> stockOperation(@PathVariable Integer merchantId, @PathVariable Integer productId, @PathVariable String operation, @RequestBody @Valid UpdateMerchantStockDTO updateMerchantStockDTO, Errors errors) {
+        if(!merchantStockService.ensureOneProduct(merchantId, productId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("merchantStock", "merchant stock not found.", "id", "not_found")));
         }
 
@@ -74,20 +74,25 @@ public class MerchantStockController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "invalid operation, it can only be increase or decrease.", "operation", "invalid_type")));
         }
 
-        try {
-            merchantStockService.validateOperations(merchantStockId, operation, updateMerchantStockDTO);
-        } catch (Exception e1) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", e1.getMessage(), "operation", "invalid_operation")));
-        }
-
         if(errors.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
         }
 
-        try {
-           MerchantStock merchantStock = merchantStockService.stockOperation(operation, merchantStockId, updateMerchantStockDTO);
+        MerchantStock merchantStock;
 
-           return ResponseEntity.ok((new ApiResponseWithData<MerchantStock>(merchantStockService.getOperationMessage(operation, updateMerchantStockDTO), merchantStock)));
+        try {
+            merchantStock = merchantStockService.getStockByProductId(merchantId, productId);
+            merchantStockService.validateOperations(merchantStock.getId(), operation, updateMerchantStockDTO);
+        } catch (Exception e1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", e1.getMessage(), "operation", "invalid_operation")));
+        }
+
+
+
+        try {
+           MerchantStock merchantStockUpdated = merchantStockService.stockOperation(operation, merchantStock.getId(), updateMerchantStockDTO);
+
+           return ResponseEntity.ok((new ApiResponseWithData<MerchantStock>(merchantStockService.getOperationMessage(operation, updateMerchantStockDTO), merchantStockUpdated)));
         } catch (Exception e2) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", e2.getMessage(), "operation", "invalid_type")));
         }
