@@ -23,9 +23,6 @@ import java.util.Collection;
 public class MerchantStockController {
 
     private final MerchantStockService merchantStockService;
-    private final ProductService productService;
-    private final MerchantService merchantService;
-    private final ErrorsService errorsService;
 
 
     @GetMapping("/get")
@@ -39,11 +36,11 @@ public class MerchantStockController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "the id must be unique.", "id", "unique")));
         }
 
-        if(!productService.containsId(merchantStock.getProductId())) {
+        if(!merchantStockService.getProductService().containsId(merchantStock.getProductId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "No product have been found with the product id you provided.", "productId", "product_not_found")));
         }
 
-        if(!merchantService.containsId(merchantStock.getMerchantId())) {
+        if(!merchantStockService.getMerchantService().containsId(merchantStock.getMerchantId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("merchantStock", "No merchant have been found with the merchant id you provided.", "merchantId", "merchant_not_found")));
         }
 
@@ -52,7 +49,7 @@ public class MerchantStockController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((merchantStockService.getErrorsService().bulkAdd(errors).get()));
         }
 
         merchantStockService.createMerchantStock(merchantStock);
@@ -75,7 +72,7 @@ public class MerchantStockController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((merchantStockService.getErrorsService().bulkAdd(errors).get()));
         }
 
         MerchantStock merchantStock;

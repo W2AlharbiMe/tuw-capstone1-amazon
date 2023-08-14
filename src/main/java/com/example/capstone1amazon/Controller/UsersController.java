@@ -26,10 +26,6 @@ import java.util.HashMap;
 public class UsersController {
 
     private final UserService userService;
-    private final ErrorsService errorsService;
-    private final MerchantService merchantService;
-    private final MerchantStockService merchantStockService;
-    private final ProductService productService;
 
 
     // GET /api/v1/users/get?role=admin
@@ -53,7 +49,7 @@ public class UsersController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userService.getErrorsService().bulkAdd(errors).get());
         }
 
         userService.createUser(user);
@@ -72,7 +68,7 @@ public class UsersController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userService.getErrorsService().bulkAdd(errors).get());
         }
 
         User user = userService.updateUser(id, updateUserDTO);
@@ -94,7 +90,8 @@ public class UsersController {
 
     @GetMapping("/get/{field}/{value}")
     public ResponseEntity<?> getUserByField(@PathVariable String field, @PathVariable String value) {
-        if(field.equalsIgnoreCase("email")) {
+
+        if(userService.isEmailField(field)) {
             if(!userService.containsEmail(value)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "email", "not_found")));
             }
@@ -102,7 +99,7 @@ public class UsersController {
             return ResponseEntity.ok(userService.getUserByEmail(value));
         }
 
-        if(field.equalsIgnoreCase("id")) {
+        if(userService.isIdField(field)) {
             try {
                 if(!userService.containsId(Integer.parseInt(value))) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "id", "not_found")));
@@ -120,56 +117,62 @@ public class UsersController {
     @PutMapping("/buy")
     public ResponseEntity<?> buyProduct(@RequestBody @Valid BuyProductDTO buyProductDTO, Errors errors) {
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userService.getErrorsService().bulkAdd(errors).get());
         }
-
+        // 1. make sure the user exists.
         if(!userService.containsId(buyProductDTO.getUserId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "user not found.", "id", "not_found")));
         }
 
-        if(!merchantService.containsId(buyProductDTO.getMerchantId())) {
+        // 2. make sure the merchant exists.
+        if(!userService.getMerchantService().containsId(buyProductDTO.getMerchantId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "merchant not found.", "merchantId", "not_found")));
         }
 
-        if(!productService.containsId(buyProductDTO.getProductId())) {
+        // 3. make sure the product exists
+        if(!userService.getProductService().containsId(buyProductDTO.getProductId())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body((new ApiErrorResponse("user", "product not found.", "productId", "not_found")));
         }
 
-        if(!merchantStockService.ensureMerchantHaveStocks(buyProductDTO.getMerchantId())) {
+        // 4. make sure the merchant have stock
+        if(!userService.getMerchantStockService().ensureMerchantHaveStocks(buyProductDTO.getMerchantId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "the merchant does not have stocks of anything.", "merchantId", "no_stock")));
         }
 
-        // ensure that the merchant have the product
-        if(!merchantStockService.ensureOneProduct(buyProductDTO.getMerchantId(), buyProductDTO.getProductId())) {
+        // 5. make sure the merchant does have the product
+        // what if the product exists but it's exists in another merchant stock ?
+        if(!userService.getMerchantStockService().ensureOneProduct(buyProductDTO.getMerchantId(), buyProductDTO.getProductId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "the merchant does not have this product.", "merchantStock", "no_merchant_stock")));
         }
 
-        // validate user balance
-        Product product = productService.getProductById(buyProductDTO.getProductId());
+        Product product = userService.getProductService().getProductById(buyProductDTO.getProductId());
 
+        // validate user balance
+        // does the user have enough money to buy product ?
         if(userService.validateBalance(product.getPrice(), buyProductDTO.getUserId())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", "insufficient balance", "balance", "balance_error")));
         }
 
         try {
-            MerchantStock merchantStock = merchantStockService.getStockByProductId(buyProductDTO.getMerchantId(), buyProductDTO.getProductId());
+            // what if there's a merchant but there's no merchant stock ?
+            MerchantStock merchantStock = userService.getMerchantStockService().getStockByProductId(buyProductDTO.getMerchantId(), buyProductDTO.getProductId());
             UpdateMerchantStockDTO updateMerchantStockDTO = new UpdateMerchantStockDTO(buyProductDTO.getAmount());
 
             try {
                 // ensure that there's enough stock
-                merchantStockService.validateOperations(merchantStock.getId(), "decrease", updateMerchantStockDTO);
+                userService.getMerchantStockService().validateOperations(merchantStock.getId(), "decrease", updateMerchantStockDTO);
             } catch (Exception e1) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((new ApiErrorResponse("user", e1.getMessage(), "amount", "invalid_amount")));
             }
 
-            merchantStock = merchantStockService.stockOperation("decrease", merchantStock.getId(), updateMerchantStockDTO);
+            merchantStock = userService.getMerchantStockService().stockOperation("decrease", merchantStock.getId(), updateMerchantStockDTO);
             HashMap<String, Double> balanceResponse = userService.buyProduct(buyProductDTO.getUserId(), product.getPrice());
 
             return ResponseEntity.ok((new ApiUserBuyResponse(
                     "successful.",
                     userService.getUserById(buyProductDTO.getUserId()),
                     product,
-                    merchantService.getMerchantById(buyProductDTO.getMerchantId()),
+                    userService.getMerchantService().getMerchantById(buyProductDTO.getMerchantId()),
                     merchantStock,
                     balanceResponse
             )));

@@ -2,13 +2,19 @@ package com.example.capstone1amazon.Service;
 
 import com.example.capstone1amazon.DTO.UpdateProductDTO;
 import com.example.capstone1amazon.Model.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashMap;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
+
+    private final ErrorsService errorsService;
+    private final CategoryService categoryService;
+
     private final HashMap<Integer, Product> products = new HashMap<>();
 
 
@@ -45,5 +51,13 @@ public class ProductService {
 
     public Product getProductById(Integer id) {
         return products.get(id);
+    }
+
+    public ErrorsService getErrorsService() {
+        return errorsService;
+    }
+
+    public CategoryService getCategoryService() {
+        return categoryService;
     }
 }
