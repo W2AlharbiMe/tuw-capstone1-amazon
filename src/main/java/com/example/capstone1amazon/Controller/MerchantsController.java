@@ -22,7 +22,6 @@ import java.util.Collection;
 public class MerchantsController {
 
     private final MerchantService merchantService;
-    private final ErrorsService errorsService;
 
     @GetMapping("/get")
     public ResponseEntity<Collection<Merchant>> getAllMerchants() {
@@ -36,7 +35,7 @@ public class MerchantsController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((merchantService.getErrorsService().bulkAdd(errors).get()));
         }
 
         merchantService.saveMerchant(merchant);
@@ -52,7 +51,7 @@ public class MerchantsController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((errorsService.bulkAdd(errors).get()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((merchantService.getErrorsService().bulkAdd(errors).get()));
         }
 
         Merchant merchant = merchantService.updateMerchant(id, updateMerchantDTO);

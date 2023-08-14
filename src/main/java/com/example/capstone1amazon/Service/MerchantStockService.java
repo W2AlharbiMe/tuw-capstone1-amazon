@@ -3,6 +3,8 @@ package com.example.capstone1amazon.Service;
 import com.example.capstone1amazon.DTO.UpdateMerchantStockDTO;
 import com.example.capstone1amazon.Model.Merchant;
 import com.example.capstone1amazon.Model.MerchantStock;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,10 +13,21 @@ import java.util.HashMap;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class MerchantStockService {
 
     private final HashMap<Integer, MerchantStock> merchantsStocks = new HashMap<>();
     private final HashMap<Integer, ArrayList<Integer>> merchantProducts = new HashMap<>();
+
+    @Getter
+    private final ProductService productService;
+    @Getter
+    private final MerchantService merchantService;
+    @Getter
+    private final ErrorsService errorsService;
+
+
+
 
     public Collection<MerchantStock> getAllMerchantsStocks() {
         return merchantsStocks.values();
@@ -135,6 +148,18 @@ public class MerchantStockService {
 
         for (MerchantStock stock : stocks) {
             if(Objects.equals(stock.getMerchantId(), merchantId) && Objects.equals(stock.getProductId(), productId)) {
+                return stock;
+            }
+        }
+
+        throw new Exception("Stock Not Found.");
+    }
+
+    public MerchantStock getStockByProductId(Integer productId) throws Exception {
+        Collection<MerchantStock> stocks = getAllMerchantsStocks();
+
+        for (MerchantStock stock : stocks) {
+            if(Objects.equals(stock.getProductId(), productId)) {
                 return stock;
             }
         }

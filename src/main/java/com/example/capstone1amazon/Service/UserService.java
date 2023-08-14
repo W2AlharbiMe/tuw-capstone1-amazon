@@ -2,6 +2,8 @@ package com.example.capstone1amazon.Service;
 
 import com.example.capstone1amazon.DTO.UpdateUserDTO;
 import com.example.capstone1amazon.Model.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -10,9 +12,30 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final HashMap<Integer, User> users = new HashMap<>();
     private final HashMap<String, Integer> emails = new HashMap<>();
+
+    @Getter
+    private final ErrorsService errorsService;
+
+    @Getter
+    private final MerchantService merchantService;
+
+    @Getter
+    private final MerchantStockService merchantStockService;
+
+    @Getter
+    private final ProductService productService;
+
+    public boolean isEmailField(String field) {
+        return field.equalsIgnoreCase("email");
+    }
+
+    public boolean isIdField(String field) {
+        return field.equalsIgnoreCase("id");
+    }
 
 
     public Collection<User> getAllUsers(String role) {

@@ -23,7 +23,6 @@ import java.util.Collection;
 public class CategoriesController {
 
     private final CategoryService categoryService;
-    private final ErrorsService errorsService;
 
 
     @GetMapping("/get")
@@ -39,7 +38,7 @@ public class CategoriesController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(categoryService.getErrorsService().bulkAdd(errors).get());
         }
 
         categoryService.saveCategory(category);
@@ -54,7 +53,7 @@ public class CategoriesController {
         }
 
         if(errors.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsService.bulkAdd(errors).get());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(categoryService.getErrorsService().bulkAdd(errors).get());
         }
 
         Category category = categoryService.updateCategory(id, updateCategoryDTO);
